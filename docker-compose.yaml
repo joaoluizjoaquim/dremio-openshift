@@ -1,0 +1,10 @@
+version: '3.4'
+services:
+  dremio-web:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - "9047:9047"
+      - "31010:31010"
+      - "45678:45678"
