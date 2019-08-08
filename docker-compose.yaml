@@ -6,7 +6,6 @@ services:
       dockerfile: Dockerfile
     environment:
       DREMIO_HOME: /opt/dremio
-      CONTAINER_ROLE: coordinator
     ports:
       - "9047:9047"
       - "31010:31010"
@@ -17,6 +16,19 @@ services:
       - zoo3
     volumes:
       - ./persistence/data:/opt/dremio/data
+  executor:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      args:
+      - CONTAINER_ROLE=executor
+    environment:
+      DREMIO_HOME: /opt/dremio
+    depends_on:
+      - zoo1
+      - zoo2
+      - zoo3
+      - coordinator
   zoo1:
     image: zookeeper
     restart: always
@@ -26,7 +38,6 @@ services:
     environment:
       ZOO_MY_ID: 1
       ZOO_SERVERS: server.1=0.0.0.0:2888:3888;2181 server.2=zoo2:2888:3888;2181 server.3=zoo3:2888:3888;2181
-
   zoo2:
     image: zookeeper
     restart: always
@@ -36,7 +47,6 @@ services:
     environment:
       ZOO_MY_ID: 2
       ZOO_SERVERS: server.1=zoo1:2888:3888;2181 server.2=0.0.0.0:2888:3888;2181 server.3=zoo3:2888:3888;2181
-
   zoo3:
     image: zookeeper
     restart: always
