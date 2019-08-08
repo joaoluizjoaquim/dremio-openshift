@@ -10,7 +10,8 @@ ARG GROUP=dremio
 
 ENV DREMIO_HOME /opt/dremio \
     DREMIO_PID_DIR /var/run/dremio \
-    SERVER_GC_OPTS="-XX:+PrintGCDetails -XX:+PrintGCDateStamps"
+    SERVER_GC_OPTS="-XX:+PrintGCDetails -XX:+PrintGCDateStamps" \
+    ZOOKEEPER_URL=zoo1:2181,zoo2:2181,zoo3:2181
 
 RUN groupadd --gid 1000 ${GROUP} \
   && useradd --uid 1000 --gid 1000 ${USER}
