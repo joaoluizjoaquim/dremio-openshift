@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 
-FROM openjdk:8-jdk as run
+FROM openjdk:8 as run
 
 LABEL org.label-schema.name='dremio/dremio-oss'
 LABEL org.label-schema.description='Dremio OSS.'
@@ -30,7 +30,7 @@ ENV DREMIO_HOME /opt/dremio \
     SERVER_GC_OPTS="-XX:+PrintGCDetails -XX:+PrintGCDateStamps"
 
 RUN groupadd --gid 1000 ${GROUP} \
-  && useradd --uid ${USER_ID} --gid 1000 ${USER}
+  && useradd --uid $1000 --gid 1000 ${USER}
 
 RUN \
   mkdir -p                      /opt/dremio \
