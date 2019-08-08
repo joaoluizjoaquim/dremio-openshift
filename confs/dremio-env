@@ -51,14 +51,14 @@ DREMIO_PID_DIR=${DREMIO_HOME}/run
 #
 # Default to 4096 for server
 #
-#DREMIO_MAX_HEAP_MEMORY_SIZE_MB=4096
+DREMIO_MAX_HEAP_MEMORY_SIZE_MB=1024
 
 #
 # Max direct memory size (in MB) for the Dremio process
 #
 # Default to 8192 for server
 #
-#DREMIO_MAX_DIRECT_MEMORY_SIZE_MB=8192
+DREMIO_MAX_DIRECT_MEMORY_SIZE_MB=2048
 
 #
 # Max permanent generation memory size (in MB) for the Dremio process
@@ -66,7 +66,7 @@ DREMIO_PID_DIR=${DREMIO_HOME}/run
 #
 # Default to 512 for server
 #
-#DREMIO_MAX_PERMGEN_MEMORY_SIZE_MB=512
+DREMIO_MAX_PERMGEN_MEMORY_SIZE_MB=512
 
 #
 # Garbage collection logging is enabled by default. Set the following

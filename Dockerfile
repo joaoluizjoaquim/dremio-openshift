@@ -26,8 +26,6 @@ ARG GROUP=dremio
 
 ENV DREMIO_HOME /opt/dremio \
     DREMIO_PID_DIR /var/run/dremio \
-    DREMIO_GC_LOGS_ENABLED="no" \
-    DREMIO_LOG_DIR="/var/log/dremio" \
     SERVER_GC_OPTS="-XX:+PrintGCDetails -XX:+PrintGCDateStamps"
 
 RUN groupadd --gid 1000 ${GROUP} \
@@ -59,6 +57,7 @@ RUN \
   && rm -rf dremio.tar.gz
 
 COPY confs/dremio-${CONTAINER_ROLE}.conf /opt/dremio/conf/dremio.conf
+COPY confs/dremio-env /opt/dremio/conf/dremio-env
 
 EXPOSE 9047/tcp
 EXPOSE 31010/tcp
