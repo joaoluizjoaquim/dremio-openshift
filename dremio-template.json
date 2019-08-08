@@ -1,0 +1,197 @@
+{
+    "kind": "Template",
+    "apiVersion": "v1",
+    "metadata": {
+        "name": "dremio",
+        "creationTimestamp": null,
+        "annotations": {
+            "description": "Dremio base setup",
+            "openshift.io/display-name": "Dremio",
+            "openshift.io/long-description": "This template deploys an Dremio coordinator and executor.",
+            "tags": "dremio"
+        }
+    },
+    "message": "The Dremio coordinator and executor have been deployed to your project",
+    "objects": [
+        {
+            "kind": "ImageStream",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "dremio-coordinator"
+            }
+        },
+        {
+            "kind": "BuildConfig",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "dremio-coordinator"
+            },
+            "spec": {
+                "source": {
+                    "type": "Git",
+                    "git": {
+                        "uri": "${SOURCE_REPOSITORY_URL}"
+                    }
+                },
+                "strategy": {
+                    "type": "Docker",
+                    "dockerStrategy": {
+                        "noCache": true,
+                        "forcePull": true,
+                        "buildArgs" : [
+                            {
+                                "name": "CONTAINER_ROLE",
+                                "value": "coordinator"
+                            }
+                        ]
+                    } 
+                },
+                "output": {
+                    "to": {
+                        "kind": "ImageStreamTag",
+                        "name": "dremio-coordinator:latest"
+                    }
+                }
+            }
+        },
+        {
+            "kind": "DeploymentConfig",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "dremio-coordinator"
+            },
+            "spec": {
+                "template": {
+                    "metadata": {
+                        "labels": {
+                            "app": "dremio",
+                            "tier": "coordinator"
+                        }
+                    },
+                    "spec": {
+                        "volumes":[
+                            {
+                                "name": "dremio",
+                                "emptyDir": {
+                                    "medium": ""
+                                }
+                            }
+                        ],
+                        "containers": [
+                            {
+                                "name": "dremio-coordinator",
+                                "image": "dremio-coordinator",
+                                "ports": [
+                                    {
+                                        "containerPort": 9047,
+                                        "name": "http",
+                                        "protocol": "TCP"
+                                    }
+                                ],
+                                "env": [
+                                    {
+                                        "name": "DREMIO_HOME",
+                                        "value": "/opt/dremio"
+                                    }
+                                ],
+                                "volumeMounts": [
+                                    {
+                                        "mountPath": "/opt/dremio/data",
+                                        "name": "dremio"
+                                    }
+                                ],
+                                "livenessProbe": {
+                                    "httpGet": {
+                                        "path": "/",
+                                        "port": 9047
+                                    },
+                                    "initialDelaySeconds": 240,
+                                    "periodsSeconds": 60
+                                }
+                            }
+                        ]
+                    }
+                },
+                "replicas": 1,
+                "selector": {
+                    "app": "dremio",
+                    "tier": "coordinator"
+                },
+                "triggers": [
+                    {
+                        "type": "ConfigChange"
+                    },
+                    {
+                        "type": "ImageChange",
+                        "imageChangeParams": {
+                            "automatic": true,
+                            "containerNames": [
+                                "dremio-coordinator"
+                            ],
+                            "from": {
+                                "kind": "ImageStreamTag",
+                                "name": "dremio-coordinator:latest"
+                            }
+                        }
+                    }
+                ],
+                "strategy": {
+                    "type": "Rolling"
+                }
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "Service",
+            "metadata": {
+                "name": "dremio-coordinator"
+            },
+            "spec": {
+                "ports": [
+                    {
+                        "name": "http",
+                        "port": 9047,
+                        "protocol": "TCP",
+                        "targetPort": "http"
+                    }
+                ],
+                "selector": {
+                    "app": "dremio",
+                    "tier": "coordinator"
+                },
+                "sessionAffinity": "None",
+                "type": "ClusterIP"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "Route",
+            "metadata": {
+                "name": "dremio-coordinator"
+            },
+            "spec": {
+                "to": {
+                    "kind": "Service",
+                    "name": "dremio-coordinator"
+                }
+            }
+        }
+    ],
+    "parameters": [
+        {
+            "name": "VOLUME_CAPACITY",
+            "displayName": "Volume Capacity",
+            "description": "Volume space available for data, e.g. 512Mi, 2Gi.",
+            "value": "2Gi",
+            "required": true
+        },
+        {
+            "name": "SOURCE_REPOSITORY_URL",
+            "value": "https://github.com/joaoluizjoaquim/dremio-openshift.git"
+        }
+    ],
+    "labels": {
+        "app": "dremio",
+        "template": "dremio-template"
+    }
+}
