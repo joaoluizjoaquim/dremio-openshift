@@ -22,6 +22,7 @@ LABEL org.label-schema.description='Dremio OSS.'
 ARG DOWNLOAD_URL=https://download.dremio.com/community-server/3.3.1-201907291852280797-df23756/dremio-community-3.3.1-201907291852280797-df23756.tar.gz
 ARG CONTAINER_ROLE=coordinator
 ARG USER=dremio
+ARG USER_ID=1000120111
 ARG GROUP=dremio
 
 ENV DREMIO_HOME /opt/dremio \
@@ -29,7 +30,7 @@ ENV DREMIO_HOME /opt/dremio \
     SERVER_GC_OPTS="-XX:+PrintGCDetails -XX:+PrintGCDateStamps"
 
 RUN groupadd --gid 1000 ${GROUP} \
-  && useradd --uid 1000 --gid 1000 ${USER}
+  && useradd --uid ${USER_ID} --gid 1000 ${USER}
 
 RUN \
   mkdir -p                      /opt/dremio \
