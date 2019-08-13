@@ -69,14 +69,6 @@
                         }
                     },
                     "spec": {
-                        "volumes":[
-                            {
-                                "name": "dremio",
-                                "emptyDir": {
-                                    "medium": ""
-                                }
-                            }
-                        ],
                         "containers": [
                             {
                                 "name": "dremio-coordinator",
@@ -92,12 +84,6 @@
                                     {
                                         "name": "DREMIO_HOME",
                                         "value": "/opt/dremio"
-                                    }
-                                ],
-                                "volumeMounts": [
-                                    {
-                                        "mountPath": "/opt/dremio/data",
-                                        "name": "dremio"
                                     }
                                 ],
                                 "livenessProbe": {
@@ -117,30 +103,6 @@
                     "app": "dremio",
                     "tier": "coordinator"
                 },
-                "volumeClaimTemplates": [
-                    {
-                        "metadata": {
-                            "annotations": {
-                                "volume.beta.kubernetes.io/storage-class": "glusterfs-storage",
-                                "volume.beta.kubernetes.io/storage-provisioner": "kubernetes.io/glusterfs"
-                            },
-                            "name": "dremio",
-                            "labels": {
-                                "application": "dremio-coordinator"
-                            }
-                        },
-                        "spec": {
-                            "accessModes": [
-                                "ReadWriteMany"
-                            ],
-                            "resources": {
-                                "requests": {
-                                    "storage": "2Gi"
-                                }
-                            }
-                        }
-                    }
-                ],
                 "triggers": [
                     {
                         "type": "ConfigChange"
@@ -202,13 +164,6 @@
         }
     ],
     "parameters": [
-        {
-            "name": "VOLUME_CAPACITY",
-            "displayName": "Volume Capacity",
-            "description": "Volume space available for data, e.g. 512Mi, 2Gi.",
-            "value": "2Gi",
-            "required": true
-        },
         {
             "name": "SOURCE_REPOSITORY_URL",
             "value": "https://github.com/joaoluizjoaquim/dremio-openshift.git"
