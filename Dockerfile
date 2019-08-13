@@ -13,7 +13,7 @@ ENV DREMIO_HOME /opt/dremio \
     SERVER_GC_OPTS="-XX:+PrintGCDetails -XX:+PrintGCDateStamps" \
     ZOOKEEPER_URL=zoo1:2181,zoo2:2181,zoo3:2181
 
-RUN if [ "$USER" = "1000" ] ; then groupadd -g 1000 user; useradd -u 1000 -g 1000 user ; fi
+RUN groupadd --gid 1000 ${GROUP} && useradd --uid 1000 --gid 1000 ${USER}
 
 RUN \
   mkdir -p                      /opt/dremio \
