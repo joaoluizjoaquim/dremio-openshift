@@ -6,7 +6,7 @@ LABEL org.label-schema.description='Dremio OSS.'
 ARG DOWNLOAD_URL=https://download.dremio.com/community-server/3.3.1-201907291852280797-df23756/dremio-community-3.3.1-201907291852280797-df23756.tar.gz
 ARG CONTAINER_ROLE=coordinator
 ARG USER=1000120000
-ARG GROUP=dremio
+ARG GROUP=0
 
 ENV DREMIO_HOME /opt/dremio \
     DREMIO_PID_DIR /var/run/dremio \
