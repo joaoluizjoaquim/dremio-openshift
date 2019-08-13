@@ -69,14 +69,6 @@
                         }
                     },
                     "spec": {
-                        "volumes":[
-                            {
-                                "name": "dremio",
-                                "emptyDir": {
-                                    "medium": ""
-                                }
-                            }
-                        ],
                         "containers": [
                             {
                                 "name": "dremio-coordinator",
@@ -117,6 +109,30 @@
                     "app": "dremio",
                     "tier": "coordinator"
                 },
+                "volumeClaimTemplates": [
+                    {
+                        "metadata": {
+                            "annotations": {
+                                "volume.beta.kubernetes.io/storage-class": "glusterfs-storage",
+                                "volume.beta.kubernetes.io/storage-provisioner": "kubernetes.io/glusterfs"
+                            },
+                            "name": "dremio",
+                            "labels": {
+                                "application": "dremio-coordinator"
+                            }
+                        },
+                        "spec": {
+                            "accessModes": [
+                                "ReadWriteMany"
+                            ],
+                            "resources": {
+                                "requests": {
+                                    "storage": "2Gi"
+                                }
+                            }
+                        }
+                    }
+                ],
                 "triggers": [
                     {
                         "type": "ConfigChange"
