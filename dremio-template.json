@@ -69,6 +69,14 @@
                         }
                     },
                     "spec": {
+                        "volumes":[
+                            {
+                                "name": "dremio",
+                                "emptyDir": {
+                                    "medium": ""
+                                }
+                            }
+                        ],
                         "containers": [
                             {
                                 "name": "dremio-coordinator",
