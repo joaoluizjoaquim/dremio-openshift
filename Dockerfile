@@ -5,15 +5,15 @@ LABEL org.label-schema.description='Dremio OSS.'
 
 ARG DOWNLOAD_URL=https://download.dremio.com/community-server/3.3.1-201907291852280797-df23756/dremio-community-3.3.1-201907291852280797-df23756.tar.gz
 ARG CONTAINER_ROLE=coordinator
-ARG USER=1000120000
-ARG GROUP=0
+ARG USER=dremio
+ARG GROUP=dremio
 
 ENV DREMIO_HOME /opt/dremio \
     DREMIO_PID_DIR /var/run/dremio \
     SERVER_GC_OPTS="-XX:+PrintGCDetails -XX:+PrintGCDateStamps" \
     ZOOKEEPER_URL=zoo1:2181,zoo2:2181,zoo3:2181
 
-RUN groupadd --gid 1000 ${GROUP} && useradd --uid 1000 --gid 1000 ${USER}
+RUN groupadd --gid 1000 ${GROUP} && useradd --uid 1000120000 --gid 1000 ${USER}
 
 RUN \
   mkdir -p                      /opt/dremio \
