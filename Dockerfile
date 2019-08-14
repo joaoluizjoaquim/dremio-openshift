@@ -43,6 +43,10 @@ RUN \
 COPY confs/dremio-${CONTAINER_ROLE}.conf /opt/dremio/conf/dremio.conf
 COPY confs/dremio-env /opt/dremio/conf/dremio-env
 
+RUN  \
+  chown -R ${USER}:${GROUP}     /opt/dremio \
+  && chmod -R ug+rwx            /opt/dremio
+
 EXPOSE 9047/tcp
 EXPOSE 31010/tcp
 EXPOSE 45678/tcp
