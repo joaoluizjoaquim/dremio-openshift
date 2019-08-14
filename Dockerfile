@@ -6,6 +6,7 @@ LABEL org.label-schema.description='Dremio OSS.'
 ARG DOWNLOAD_URL=https://download.dremio.com/community-server/3.3.1-201907291852280797-df23756/dremio-community-3.3.1-201907291852280797-df23756.tar.gz
 ARG CONTAINER_ROLE=coordinator
 ARG USER=1000121000
+ARG GROUP=0
 
 ENV DREMIO_HOME="/opt/dremio" \
     DREMIO_PID_DIR="/var/run/dremio" \
@@ -14,23 +15,23 @@ ENV DREMIO_HOME="/opt/dremio" \
 
 RUN \
   mkdir -p                      /opt/dremio \
-  && chown -R ${USER}           /opt/dremio \
+  && chown -R ${USER}:${GROUP}  /opt/dremio \
   && chmod -R ug+rwx            /opt/dremio \
   \
   && mkdir -p                   /var/lib/dremio \
-  && chown -R ${USER}           /var/lib/dremio \
+  && chown -R ${USER}:${GROUP}  /var/lib/dremio \
   && chmod -R ug+rwx            /var/lib/dremio \
   \
   && mkdir -p                   /var/run/dremio \
-  && chown -R ${USER}           /var/run/dremio \
+  && chown -R ${USER}:${GROUP}  /var/run/dremio \
   && chmod -R ug+rwx            /var/run/dremio \
   \
   && mkdir -p                   /var/log/dremio \
-  && chown -R ${USER}           /var/log/dremio \
+  && chown -R ${USER}:${GROUP}  /var/log/dremio \
   && chmod -R ug+rwx            /var/log/dremio \
   \
   && mkdir -p                   /opt/dremio/data \
-  && chown -R ${USER}           /opt/dremio/data \
+  && chown -R ${USER}:${GROUP}  /opt/dremio/data \
   && chmod -R ug+rwx            /opt/dremio/data \
   \
   && wget -q "${DOWNLOAD_URL}" -O dremio.tar.gz \
@@ -39,10 +40,13 @@ RUN \
 
 ADD confs/dremio-${CONTAINER_ROLE}.conf /opt/dremio/conf/dremio.conf
 ADD confs/dremio-env /opt/dremio/conf/dremio-env
+ADD start.sh /opt/dremio/start.sh
 
 RUN  \
-  chown -R ${USER}              /opt/dremio \
-  && chmod -R ug+rwx            /opt/dremio
+  chown -R ${USER}:${GROUP}     /opt/dremio \
+  && chmod -R ug+rwx            /opt/dremio \
+  && chgrp ${GROUP}             /etc/passwd \
+  && chmod ug+rw                /etc/passwd
 
 EXPOSE 9047/tcp
 EXPOSE 31010/tcp
@@ -50,4 +54,4 @@ EXPOSE 45678/tcp
 
 USER ${USER}
 WORKDIR /opt/dremio
-ENTRYPOINT ["bin/dremio", "start-fg"]
+ENTRYPOINT [ "/opt/dremio/start.sh" ]
