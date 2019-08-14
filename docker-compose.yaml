@@ -4,18 +4,10 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile
-    environment:
-      DREMIO_HOME: /opt/dremio
     ports:
       - "9047:9047"
       - "31010:31010"
       - "45678:45678"
-    depends_on:
-      - zoo1
-      - zoo2
-      - zoo3
-    volumes:
-      - ./persistence/data:/opt/dremio/data
   executor:
     build:
       context: ./
